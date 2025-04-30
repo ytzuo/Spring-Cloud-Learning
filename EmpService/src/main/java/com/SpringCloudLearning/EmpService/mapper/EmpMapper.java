@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface EmpMapper {
-    //@Select("SELECT * FROM emp")
+    @Select("SELECT * FROM emp")
     List<Emp> list(String name, Integer gender);
 
     @Delete("DELETE FROM emp WHERE id = #{id}")
