@@ -1,0 +1,23 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: Gateway
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+    gateway:
+      routes:
+        - id: DeptService
+          uri: lb://DeptService
+          predicates:
+            - Path=/depts/**
+        - id: EmpService
+          uri: lb://EmpService
+          predicates:
+            - Path=/emps/**
+        - id: LoginService
+          uri: lb://LoginService
+          predicates:
+            - Path=/login
