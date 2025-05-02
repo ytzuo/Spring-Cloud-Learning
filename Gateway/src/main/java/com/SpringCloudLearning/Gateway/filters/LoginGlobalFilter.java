@@ -4,6 +4,7 @@ import com.SpringCloudLearning.Gateway.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-@Order(1)
-public class LoginGlobalFilter implements GlobalFilter {
+@Order(3)
+public class LoginGlobalFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String requestPath = exchange.getRequest().getURI().getPath();
@@ -77,5 +78,10 @@ public class LoginGlobalFilter implements GlobalFilter {
 
         DataBuffer buffer = response.bufferFactory().wrap(errorMessage.getBytes(StandardCharsets.UTF_8));
         return response.writeWith(Mono.just(buffer));
+    }
+
+    @Override
+    public int getOrder() {
+        return 3;
     }
 }
