@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
@@ -24,9 +23,7 @@ public class LoginGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String requestPath = exchange.getRequest().getURI().getPath();
         System.out.println();
-        System.out.println();
         System.out.println(requestPath);
-        System.out.println();
         System.out.println();
         //登录请求直接忽略
         if ("/login".equals(requestPath)) {
@@ -45,14 +42,22 @@ public class LoginGlobalFilter implements GlobalFilter, Ordered {
                     return handleExpiredResponse(exchange);
                 }
                 // 如果未过期，放行
-                return chain.filter(exchange);
+                System.out.println("开始获取id");
+                Object id = claims.get("id");
+                Integer i = (Integer) id;
+                ServerWebExchange swe = exchange.mutate()
+                        .request(builder -> builder.header("user_id", String.valueOf(i)))
+                        .build();
+                return chain.filter(swe);
             } catch (Exception e) {
                 // 如果解析失败，返回未授权的响应
+                System.out.println("解析失败");
                 return handleUnauthorizedResponse(exchange);
             }
 
         } else {
             // 如果没有提供令牌，也返回未授权的响应
+            System.out.println("无令牌");
             return handleUnauthorizedResponse(exchange);
         }
     }

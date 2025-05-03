@@ -22,9 +22,10 @@ public class DeptController {
     //获取所有部门
     @myLog
     @GetMapping("/depts") //等效
-    public Result list(@RequestParam(defaultValue = "1") Integer page,
+    public Result list(@RequestHeader(value = "user_id", required = false) String user_id,
+                       @RequestParam(defaultValue = "1") Integer page,
                        @RequestParam(defaultValue = "10") Integer pageSize){
-        log.info("分页查询员工, 参数: {}, {}", page, pageSize);
+        log.info("分页查询员工, 参数: {}, {}, 执行操作用户id: {}", page, pageSize, user_id);
         PageBean deptList = deptService.list(page, pageSize);
         return Result.success(deptList);
     }
@@ -32,8 +33,9 @@ public class DeptController {
     //根据id删除
     @myLog
     @DeleteMapping("/depts/{id}")
-    public Result deleteById(@PathVariable Integer id){
-        log.info("根据id删除部门:{}", id);
+    public Result deleteById(@RequestHeader(value = "user_id", required = false) String user_id,
+                             @PathVariable Integer id){
+        log.info("根据id删除部门:{}, 执行操作用户id: {}", id, user_id);
         deptService.deleteById(id);
         return Result.success(null);
     }
@@ -41,8 +43,9 @@ public class DeptController {
     //插入新部门
     @myLog
     @PostMapping("/depts/add")
-    public Result insertDept(@RequestBody Dept dept){
-        log.info("新增部门: {}", dept);
+    public Result insertDept(@RequestHeader(value = "user_id", required = false) String user_id,
+                             @RequestBody Dept dept){
+        log.info("新增部门: {}, 执行操作用户id: {}", dept, user_id);
         deptService.insertDept(dept);
         return Result.success(null);
     }
